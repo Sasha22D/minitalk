@@ -13,17 +13,16 @@ int main(int argc, char **argv)
 	{
 		while (argv[2][i])
 		{
-			bit_index = 0;
+			bit_index = 7;
 			unsigned char	temp_char = argv[2][i];
-			while (bit_index < 8)
+			while (bit_index >= 0)
 			{
-				if (temp_char & 0x01)
+				if ((temp_char >> bit_index) & 1)
 					kill(atoi(argv[1]), SIGUSR1);
 				else
 					kill(atoi(argv[1]), SIGUSR2);
-				bit_index++;
-				temp_char = temp_char >> 1;
-				usleep(42);
+				usleep(100);
+				bit_index--;
 			}
 			i++;
 		}

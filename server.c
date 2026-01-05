@@ -5,10 +5,19 @@
 
 void	sigusr_handler(int signal)
 {
+	static unsigned char	my_char = 0;
+	static int				bit_index = 0;
+
 	if (signal == SIGUSR1)
-		printf("\nSIGUSR1 received!\n");
-	else if (signal == SIGUSR2)
-		printf("\nSIGUSR2 received!\n");
+		my_char |= 1;
+	bit_index++;
+	if (bit_index == 8)
+	{
+		write(1, &my_char, 1);
+		bit_index = 0;
+		my_char = 0;
+	}
+	my_char <<= 1;
 }
 
 int main()
