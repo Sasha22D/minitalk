@@ -32,8 +32,14 @@ void	sigusr_handler(int signal, siginfo_t *info, void *context)
 	kill(client_pid, SIGUSR1);
 }
 
-int main()
+int main(int argc, char **argv)
 {
+	(void)argv;
+	if (argc != 1)
+	{
+		write(2, "Server doesn't need any arguments\n", 35);
+		return (EXIT_FAILURE);
+	}
 	__pid_t	PID = getpid();
 	ft_printf("PID: %d\n", PID);
 

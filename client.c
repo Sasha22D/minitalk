@@ -39,6 +39,11 @@ void	send_char(char c, __pid_t server_pid)
 
 int main(int argc, char **argv)
 {
+	if (argc != 3)
+	{
+		write(1, "Use : ./client PID string\n", 27);
+		return (EXIT_FAILURE);
+	}
 	int		i;
 	__pid_t	server_pid;
 
