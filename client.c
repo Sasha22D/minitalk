@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sadaniel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/09 14:04:29 by sadaniel          #+#    #+#             */
+/*   Updated: 2026/01/09 14:04:29 by sadaniel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "libft/libft.h"
 #include <unistd.h>
 #include <signal.h>
 
-volatile sig_atomic_t server_state = 1;
+volatile sig_atomic_t	g_server_state = 1;
 
 void	end_message(int signal)
 {
@@ -14,14 +25,14 @@ void	end_message(int signal)
 void	handler(int signal)
 {
 	if (signal == SIGUSR1)
-		server_state = 0;
+		g_server_state = 0;
 }
 
 void	send_char(char c, __pid_t server_pid)
 {
 	int				bit_index;
 	unsigned char	temp_char;
-	
+
 	bit_index = 7;
 	temp_char = c;
 	while (bit_index >= 0)
@@ -31,27 +42,22 @@ void	send_char(char c, __pid_t server_pid)
 		else
 			kill(server_pid, SIGUSR2);
 		bit_index--;
-		while (server_state == 1)
+		while (g_server_state == 1)
 			usleep(42);
-		server_state = 1;
+		g_server_state = 1;
 	}
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	if (argc != 3)
-	{
-		write(1, "Use : ./client PID string\n", 27);
-		return (EXIT_FAILURE);
-	}
 	int		i;
 	__pid_t	server_pid;
 
-	i = 0;
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, end_message);
 	if (argc == 3)
 	{
+		i = 0;
 		server_pid = ft_atoi(argv[1]);
 		while (argv[2][i])
 		{
@@ -59,5 +65,10 @@ int main(int argc, char **argv)
 			i++;
 		}
 		send_char('\0', server_pid);
+	}
+	else
+	{
+		write(1, "Use : ./client PID string\n", 27);
+		return (EXIT_FAILURE);
 	}
 }
