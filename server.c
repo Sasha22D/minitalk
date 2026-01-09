@@ -1,7 +1,6 @@
+#include "libft/libft.h"
 #include <unistd.h>
-#include <stdio.h>
 #include <signal.h>
-#include <stdlib.h>
 
 void	sigusr_handler(int signal, siginfo_t *info, void *context)
 {
@@ -20,27 +19,28 @@ void	sigusr_handler(int signal, siginfo_t *info, void *context)
 		if (my_char == '\0')
 		{
 			write(1, "\n", 1);
-			kill(info->si_pid, SIGUSR2);
+			kill(client_pid, SIGUSR2);
 			bit_index = 0;
 			my_char = 0;
 			return ;
 		}
 		write(1, &my_char, 1);
-		kill(info->si_pid, SIGUSR1);
 		bit_index = 0;
 		my_char = 0;
 	}
 	my_char <<= 1;
+	kill(client_pid, SIGUSR1);
 }
 
 int main()
 {
 	__pid_t	PID = getpid();
-	printf("PID: %d\n", PID);
+	ft_printf("PID: %d\n", PID);
 
 	struct sigaction	sa;
 
 	sa.sa_sigaction = &sigusr_handler;
+	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
 
 	sigaction(SIGUSR1, &sa, NULL);
