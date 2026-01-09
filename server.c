@@ -31,7 +31,9 @@ void	sigusr_handler(int signal, siginfo_t *info, void *context)
 		{
 			write(1, "\n", 1);
 			kill(client_pid, SIGUSR2);
-			return (bit_index = 0, my_char = 0);
+			bit_index = 0;
+			my_char = 0;
+			return ;
 		}
 		write(1, &my_char, 1);
 		bit_index = 0;
