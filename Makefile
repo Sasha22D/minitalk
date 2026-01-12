@@ -13,30 +13,32 @@ OBJ_FILES = $(SRC_FILES:%.c=%.o)
 BONUS_FILES = client_bonus.c server_bonus.c
 BONUS_OBJ = $(BONUS_FILES:%.c=%.o)
 
-all:
+all: $(NAME) $(NAMESV)
 
-$(NAME): client.o
-	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBFT_DIR) -lft
+$(LIBFT):
+	make -C $(LIBFT_DIR)
 
-$(NAMESV): server.o
-	$(CC) $(CFLAGS) $^ -o $@ -L$(LIBFT_DIR) -lft
+$(NAME): client.o $(LIBFT)
+	$(CC) $(CFLAGS) $< -o $@ -L$(LIBFT_DIR) -lft
+
+$(NAMESV): server.o $(LIBFT)
+	$(CC) $(CFLAGS) $< -o $@ -L$(LIBFT_DIR) -lft
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $^ -o $@
-	make -C $(LIBFT_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ_FILES) $(BONUS_OBJ)
 	make -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME) $(NAMESV)
+	rm -f $(NAME) $(NAMESV) $(NAME)_bonus $(NAMESV)_bonus
 	make -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-bonus: $(NAME) $(NAMESV) $(BONUS_OBJ)
-	$(CC) $(CFLAGS) $(NAME).o -o $(NAME) -L$(LIBFT_DIR) -lft
-	$(CC) $(CFLAGS) $(NAMESV).o -o $(NAMESV) -L$(LIBFT_DIR) -lft
+bonus: $(BONUS_OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(NAME)_bonus.o -o $(NAME)_bonus -L$(LIBFT_DIR) -lft
+	$(CC) $(CFLAGS) $(NAMESV)_bonus.o -o $(NAMESV)_bonus -L$(LIBFT_DIR) -lft
 
 .PHONY: all bonus clean fclean re
