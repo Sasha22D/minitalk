@@ -27,16 +27,15 @@ void	sigusr_handler(int signal, siginfo_t *info, void *context)
 	bit_index++;
 	if (bit_index == 8)
 	{
+		bit_index = 0;
 		if (my_char == '\0')
 		{
 			write(1, "\n", 1);
 			kill(client_pid, SIGUSR2);
-			bit_index = 0;
 			my_char = 0;
 			return ;
 		}
 		write(1, &my_char, 1);
-		bit_index = 0;
 		my_char = 0;
 	}
 	my_char <<= 1;
